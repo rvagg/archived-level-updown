@@ -3,7 +3,7 @@ var test       = require('tape')
   , xtend      = require('xtend')
   , levelup    = require('levelup')
   , testCommon = require('abstract-leveldown/testCommon')
-//  , testBuffer = require('crypto').randomBytes(256)
+  , testBuffer = require('crypto').randomBytes(256)
   , updown     = require('./')
 
   , testdb     = '__test.db'
@@ -14,7 +14,6 @@ function cleanup () {
   rimraf.sync(testdb)
 }
 
-/*
 function updownWrapper () {
   opendb = levelup(testdb)
   return updown(opendb)
@@ -35,7 +34,6 @@ function closingUpdownWrapper () {
   }
   return ud
 }
-*/
 
 testCommon._tearDown = testCommon.tearDown
 testCommon.tearDown = function () {
@@ -93,7 +91,6 @@ test('test basic pass-through', function (t) {
   })
 })
 
-/*
 require('abstract-leveldown/abstract/del-test').all(updownWrapper, test, testCommon)
 
 require('abstract-leveldown/abstract/get-test').all(updownWrapper, test, testCommon)
@@ -108,7 +105,6 @@ require('abstract-leveldown/abstract/chained-batch-test').all(updownWrapper, tes
 require('abstract-leveldown/abstract/iterator-test').all(closingUpdownWrapper, test, testCommon)
 
 require('abstract-leveldown/abstract/ranges-test').all(closingUpdownWrapper, test, testCommon)
-*/
 
 test('test open() wrap', function (t) {
   var db = levelup(testdb)

@@ -48,19 +48,22 @@ LevelUPDOWNIterator.prototype._next = function (callback) {
   var self = this
 
   function exec () {
-    self._externs.preNext(self, [ callback ], function (callback) {
-      self._iterator.next(function (err, key, value) {
-        self._externs.postNext(
-            self
-          , [ err, key, value, callback ]
-          , function (err, key, value, callback) {
-              if (!err && !key && !value)
-                return callback()
-              callback(err, key, value)
-            }
-        )
-      })
-    })
+    self._externs.preNext(self, [ callback ], afterPreNext)
+
+    function afterPreNext (callback) {
+      self._iterator.next(afterNext)
+
+      function afterNext (err, key, value) {
+        self._externs.postNext(self, [ err, key, value, callback ], afterPostNext)
+      }
+
+      function afterPostNext (err, key, value, callback) {
+        if (!err && !key && !value)
+          return callback()
+
+        callback(err, key, value)
+      }
+    }
   }
 
   if (!this._deferred)
@@ -74,17 +77,19 @@ LevelUPDOWNIterator.prototype._end = function (callback) {
   var self = this
 
   function exec () {
-    self._externs.preEnd(self, [ callback ], function (callback) {
-      self._iterator.end(function (err) {
-        self._externs.postEnd(
-            self
-          , [ err, callback ]
-          , function (err, callback) {
-              callback(err)
-            }
-        )
-      })
-    })
+    self._externs.preEnd(self, [ callback ], afterPreEnd)
+
+    function afterPreEnd (callback) {
+      self._iterator.end(afterEnd)
+
+      function afterEnd (err) {
+        self._externs.postEnd(self, [ err, callback ], afterPostEnd)
+      }
+
+      function afterPostEnd (err, callback) {
+        callback(err)
+      }
+    }
   }
 
   if (!this._deferred)
@@ -127,84 +132,96 @@ inherits(LevelUPDOWN, AbstractLevelDOWN)
 
 // noop
 LevelUPDOWN.prototype._open = function (options, callback) {
-  this._externs.open(this, [ options, callback ], function (options, callback) {
+  this._externs.open(this, [ options, callback ], afterOpen)
+
+  function afterOpen (options, callback) {
     process.nextTick(callback)
-  })
+  }
 }
 
 
 // noop
 LevelUPDOWN.prototype._close = function (callback) {
-  this._externs.close(this, [ callback ], function (callback) {
+  this._externs.close(this, [ callback ], afterClose)
+
+  function afterClose (callback) {
     process.nextTick(callback)
-  })
+  }
 }
 
 LevelUPDOWN.prototype._put = function (key, value, options, callback) {
   var self = this
 
-  this._externs.prePut(this, [ key, value, options, callback ], function (key, value, options, callback) {
-    return self.levelup.put(key, value, fixOptions(options), function (err) {
-      self._externs.postPut(
-          self
-        , [ key, value, options, err, callback ]
-        , function (key, value, options, err, callback) {
-            callback(err)
-          }
-      )
-    })
-  })
+  this._externs.prePut(this, [ key, value, options, callback ], afterPrePut)
+
+  function afterPrePut (key, value, options, callback) {
+    self.levelup.put(key, value, fixOptions(options), afterPut)
+
+    function afterPut (err) {
+      self._externs.postPut(self, [ key, value, options, err, callback ], afterPostPut)
+    }
+
+    function afterPostPut (key, value, options, err, callback) {
+      callback(err)
+    }
+  }
 }
 
 
 LevelUPDOWN.prototype._get = function (key, options, callback) {
   var self = this
 
-  this._externs.preGet(this, [ key, options, callback ], function (key, options, callback) {
-    return self.levelup.get(key, fixOptions(options), function (err, value) {
-      self._externs.postGet(
-          self
-        , [ key, options, err, value, callback ]
-        , function (key, options, err, value, callback) {
-            callback(err, value)
-          }
-      )
-    })
-  })
+  this._externs.preGet(this, [ key, options, callback ], afterPreGet)
+
+  function afterPreGet (key, options, callback) {
+    self.levelup.get(key, fixOptions(options), afterGet)
+
+    function afterGet (err, value) {
+      self._externs.postGet(self, [ key, options, err, value, callback ], afterPostGet)
+    }
+
+    function afterPostGet (key, options, err, value, callback) {
+      callback(err, value)
+    }
+  }
 }
 
 
 LevelUPDOWN.prototype._del = function (key, options, callback) {
   var self = this
 
-  this._externs.preDel(this, [ key, options, callback ], function (key, options, callback) {
-    return self.levelup.del(key, fixOptions(options), function (err) {
-      self._externs.postDel(
-          self
-        , [ key, options, err, callback ]
-        , function (key, options, err, callback) {
-            callback(err)
-          }
-      )
-    })
-  })
+  this._externs.preDel(this, [ key, options, callback ], afterPreDel)
+
+  function afterPreDel (key, options, callback) {
+    self.levelup.del(key, fixOptions(options), afterDel)
+
+    function afterDel (err) {
+      self._externs.postDel(self, [ key, options, err, callback ], afterPostDel)
+    }
+
+    function afterPostDel (key, options, err, callback) {
+      callback(err)
+    }
+  }
 }
 
 
 LevelUPDOWN.prototype._batch = function (array, options, callback) {
   var self = this
 
-  this._externs.preBatch(this, [ array, options, callback ], function (array, options, callback) {
-    return self.levelup.batch(array, fixOptions(options), function (err) {
-      self._externs.postBatch(
-          self
-        , [ array, options, err, callback ]
-        , function (array, options, err, callback) {
-            callback(err)
-          }
-      )
-    })
-  })
+  this._externs.preBatch(this, [ array, options, callback ], afterPreBatch)
+
+  function afterPreBatch (array, options, callback) {
+    self.levelup.batch(array, fixOptions(options), afterBatch)
+
+    function afterBatch (err) {
+      self._externs.postBatch(self, [ array, options, err, callback ], afterPostBatch)
+    }
+
+    function afterPostBatch (array, options, err, callback) {
+      callback(err)
+    }
+  }
 }
 
 
@@ -220,9 +237,9 @@ LevelUPDOWN.prototype._isBuffer = function (obj) {
 
 module.exports                     = LevelUPDOWN
 module.exports.LevelUPDOWNIterator = LevelUPDOWNIterator
-module.exports.factory             = function () {
+module.exports.factory             = function factory () {
   var args = Array.prototype.slice.call(arguments)
-  return function () {
+  return function makeLevelUPDOWN () {
     return LevelUPDOWN.apply(null, args)
   }
 }
