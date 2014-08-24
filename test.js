@@ -525,7 +525,7 @@ test('test iterator() extends', function (t) {
     , iteratorCalledWith
 
   ud.extendWith({
-      iterator: function () {
+      postIterator: function () {
         iteratorCalledWith = Array.prototype.slice.call(arguments)
         return { extendedIterator: 1 }
       }
@@ -537,7 +537,7 @@ test('test iterator() extends', function (t) {
   t.deepEqual(ret, { extendedIterator: 1 }, 'returned expected object')
   t.ok(iteratorCalledWith[0] instanceof updown.LevelUPDOWNIterator, 'got expected arguemnt')
   t.deepEqual(
-      { options : 1, keyEncoding: 'binary', valueEncoding: 'binary', reverse: false }
+      { options: 1, fillCache: false, keyAsBuffer: true, keyEncoding: 'binary', keys: true, limit: -1, reverse: false, valueAsBuffer: true, valueEncoding: 'binary', values: true }
     , iteratorCalledWith[0].options
     , 'iterator had expected options'
   )
@@ -565,7 +565,7 @@ test('test iterator#next wraps', function (t) {
   // that by wrapping the iterator() call of updown and doing the
   // extension within that for each new iterator
   ud.extendWith({
-      iterator: function (iterator) {
+      postIterator: function (iterator) {
         db.once('ready', function () {
           iterator._iterator.next = function (callback) {
             nextCalledWith = Array.prototype.slice.call(arguments)
@@ -627,7 +627,7 @@ test('test iterator#end wraps', function (t) {
   // that by wrapping the iterator() call of updown and doing the
   // extension within that for each new iterator
   ud.extendWith({
-      iterator: function (iterator) {
+      postIterator: function (iterator) {
         db.once('ready', function () {
           iterator._iterator.end = function (callback) {
             endCalledWith = Array.prototype.slice.call(arguments)

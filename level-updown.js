@@ -15,6 +15,9 @@ function fixOptions (options) {
 
 
 function LevelUPDOWNIterator (db, options) {
+  if (!(this instanceof LevelUPDOWNIterator))
+    return new LevelUPDOWNIterator(db, options)
+
   AbstractIterator.call(this, db)
 
   this.options = options
@@ -98,9 +101,9 @@ LevelUPDOWNIterator.prototype._end = function (callback) {
   this._deferred.on('ready', exec)
 }
 
-function LevelUPDOWN (levelup, options) {
+function LevelUPDOWN (levelup) {
   if (!(this instanceof LevelUPDOWN))
-    return new LevelUPDOWN(levelup, options)
+    return new LevelUPDOWN(levelup)
 
   AbstractLevelDOWN.call(this, '')
 
@@ -120,7 +123,8 @@ function LevelUPDOWN (levelup, options) {
         , 'postBatch'
       ]
     , extend : [
-          'iterator'
+          'preIterator'
+        , 'postIterator'
       ]
   })
 
@@ -226,7 +230,19 @@ LevelUPDOWN.prototype._batch = function (array, options, callback) {
 
 
 LevelUPDOWN.prototype._iterator = function (options) {
-  return this._externs.iterator(new LevelUPDOWNIterator(this, fixOptions(options)))
+  var self = this
+
+  function iteratorFactory (options) {
+    var iterator = new LevelUPDOWNIterator(self, fixOptions(options))
+    return self._externs.postIterator(iterator)
+  }
+
+  var pre = self._externs.preIterator({
+      options : options
+    , factory : iteratorFactory
+  })
+
+  return pre.factory(pre.options)
 }
 
 
