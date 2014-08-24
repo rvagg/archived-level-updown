@@ -13,6 +13,10 @@
     "jellybeans"
   ],
   "author": "Rod Vagg <r@va.gg> (http://r.va.gg/)",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/rvagg/level-updown.git"
+  },
   "license": "MIT",
   "dependencies": {
     "abstract-leveldown": ">=1.0.0 <1.1.0-0",
