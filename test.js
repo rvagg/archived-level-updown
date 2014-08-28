@@ -230,7 +230,7 @@ test('test put() wraps', function (t) {
     t.equal(putCalledWith[1], 'preputvalue', 'put() called with correct value')
     t.deepEqual(
         putCalledWith[2]
-      , { preput: 1, keyEncoding: 'binary', valueEncoding: 'binary' }
+      , { preput: 1 }
       , 'put() called with correct value'
     )
 
@@ -352,7 +352,7 @@ test('test del() wraps', function (t) {
     t.equal(delCalledWith[0], 'predelkey', 'del() called with correct key')
     t.deepEqual(
         delCalledWith[1]
-      , { predel: 1, keyEncoding: 'binary', valueEncoding: 'binary' }
+      , { predel: 1 }
       , 'del() called with correct value'
     )
 
@@ -420,7 +420,7 @@ test('test batch() wraps', function (t) {
     t.deepEqual(batchCalledWith[0], mktestBatch('prebatchkey', 'prebatchvalue'), 'batch() called with correct array')
     t.deepEqual(
         batchCalledWith[1]
-      , { prebatch: 1, keyEncoding: 'binary', valueEncoding: 'binary' }
+      , { prebatch: 1 }
       , 'batch() called with correct array'
     )
 
@@ -496,7 +496,7 @@ test('test chained batch() wraps', function (t) {
     t.deepEqual(batchCalledWith[0], mktestBatch('prebatchkey', 'prebatchvalue'), 'batch() called with correct array')
     t.deepEqual(
         batchCalledWith[1]
-      , { prebatch: 1, keyEncoding: 'binary', valueEncoding: 'binary' }
+      , { prebatch: 1 }
       , 'batch() called with correct array'
     )
 
@@ -537,7 +537,7 @@ test('test iterator() extends', function (t) {
   t.deepEqual(ret, { extendedIterator: 1 }, 'returned expected object')
   t.ok(iteratorCalledWith[0] instanceof updown.LevelUPDOWNIterator, 'got expected arguemnt')
   t.deepEqual(
-      { options: 1, fillCache: false, keyAsBuffer: true, keyEncoding: 'binary', keys: true, limit: -1, reverse: false, valueAsBuffer: true, valueEncoding: 'binary', values: true }
+      { options: 1, fillCache: false, keyAsBuffer: true, keys: true, limit: -1, reverse: false, valueAsBuffer: true, values: true, keyEncoding: 'binary', valueEncoding: 'binary' }
     , iteratorCalledWith[0].options
     , 'iterator had expected options'
   )

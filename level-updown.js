@@ -159,7 +159,7 @@ LevelUPDOWN.prototype._put = function (key, value, options, callback) {
   this._externs.prePut(this, [ key, value, options, callback ], afterPrePut)
 
   function afterPrePut (key, value, options, callback) {
-    self.levelup.put(key, value, fixOptions(options), afterPut)
+    self.levelup.put(key, value, options, afterPut)
 
     function afterPut (err) {
       self._externs.postPut(self, [ key, value, options, err, callback ], afterPostPut)
@@ -197,7 +197,7 @@ LevelUPDOWN.prototype._del = function (key, options, callback) {
   this._externs.preDel(this, [ key, options, callback ], afterPreDel)
 
   function afterPreDel (key, options, callback) {
-    self.levelup.del(key, fixOptions(options), afterDel)
+    self.levelup.del(key, options, afterDel)
 
     function afterDel (err) {
       self._externs.postDel(self, [ key, options, err, callback ], afterPostDel)
@@ -216,7 +216,7 @@ LevelUPDOWN.prototype._batch = function (array, options, callback) {
   this._externs.preBatch(this, [ array, options, callback ], afterPreBatch)
 
   function afterPreBatch (array, options, callback) {
-    self.levelup.batch(array, fixOptions(options), afterBatch)
+    self.levelup.batch(array, options, afterBatch)
 
     function afterBatch (err) {
       self._externs.postBatch(self, [ array, options, err, callback ], afterPostBatch)
