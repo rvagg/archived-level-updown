@@ -7,10 +7,14 @@ var AbstractLevelDOWN = require('abstract-leveldown').AbstractLevelDOWN
 
 
 function fixOptions (options) {
-  return xtend(options, {
-      keyEncoding   : 'binary'
-    , valueEncoding : options.asBuffer === false ? 'utf8' : 'binary'
-  })
+  var x = {
+      valueEncoding : options.asBuffer === false ? 'utf8' : 'binary'
+  }
+
+  if (options.keyEncoding != 'utf8' && options.valueEncoding != 'utf8')
+    x.keyEncoding = 'binary'
+
+  return xtend(options, x)
 }
 
 
