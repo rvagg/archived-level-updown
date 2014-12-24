@@ -14,6 +14,7 @@ function cleanup () {
   rimraf.sync(testdb)
 }
 
+
 function updownWrapper () {
   opendb = levelup(testdb)
   return updown(opendb)
@@ -44,7 +45,6 @@ testCommon.tearDown = function () {
     testCommon._tearDown.apply(null, args)
   })
 }
-
 
 // 3 layers of abstraction, test we can set and get values on both ends
 test('test basic pass-through', function (t) {
@@ -102,7 +102,12 @@ require('abstract-leveldown/abstract/put-get-del-test').all(updownWrapper, test,
 require('abstract-leveldown/abstract/batch-test').all(updownWrapper, test, testCommon)
 require('abstract-leveldown/abstract/chained-batch-test').all(updownWrapper, test, testCommon)
 
-require('abstract-leveldown/abstract/iterator-test').all(closingUpdownWrapper, test, testCommon)
+var iteratorTest = require('abstract-leveldown/abstract/iterator-test')
+iteratorTest.setUp(closingUpdownWrapper, test, testCommon)
+iteratorTest.args(test)
+iteratorTest.sequence(test)
+iteratorTest.iterator(closingUpdownWrapper, test, testCommon, testCommon.collectEntries)
+iteratorTest.tearDown(test, testCommon)
 
 require('abstract-leveldown/abstract/ranges-test').all(closingUpdownWrapper, test, testCommon)
 
@@ -537,8 +542,8 @@ test('test iterator() extends', function (t) {
   t.deepEqual(ret, { extendedIterator: 1 }, 'returned expected object')
   t.ok(iteratorCalledWith[0] instanceof updown.LevelUPDOWNIterator, 'got expected arguemnt')
   t.deepEqual(
-      { options: 1, fillCache: false, keyAsBuffer: true, keys: true, limit: -1, reverse: false, valueAsBuffer: true, values: true, keyEncoding: 'binary', valueEncoding: 'binary' }
-    , iteratorCalledWith[0].options
+      iteratorCalledWith[0].options
+    , { options: 1, reverse: false, keyEncoding: 'binary', valueEncoding: 'binary' }
     , 'iterator had expected options'
   )
 
@@ -615,7 +620,6 @@ test('test iterator#next wraps', function (t) {
   }
 })
 
-
 test('test iterator#end wraps', function (t) {
   var db = levelup(testdb)
     , ud = updown(db)
@@ -629,9 +633,12 @@ test('test iterator#end wraps', function (t) {
   ud.extendWith({
       postIterator: function (iterator) {
         db.once('ready', function () {
+          iterator._iterator._end = iterator._iterator.end
           iterator._iterator.end = function (callback) {
             endCalledWith = Array.prototype.slice.call(arguments)
-            callback(null, 'endkey', 'endvalue')
+            iterator._iterator._end(function () {
+              callback(null, 'endkey', 'endvalue')
+            })
           }
         })
 

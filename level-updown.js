@@ -1,10 +1,9 @@
 var AbstractLevelDOWN = require('abstract-leveldown').AbstractLevelDOWN
   , AbstractIterator  = require('abstract-leveldown').AbstractIterator
   , inherits          = require('util').inherits
-  , xtend             = require('xtend')
   , EventEmitter      = require('events').EventEmitter
   , externr           = require('externr')
-
+  , xtend             = require('xtend')
 
 function fixOptions (options) {
   var x = {
@@ -16,7 +15,6 @@ function fixOptions (options) {
 
   return xtend(options, x)
 }
-
 
 function LevelUPDOWNIterator (db, options) {
   if (!(this instanceof LevelUPDOWNIterator))
@@ -163,6 +161,9 @@ LevelUPDOWN.prototype._put = function (key, value, options, callback) {
   this._externs.prePut(this, [ key, value, options, callback ], afterPrePut)
 
   function afterPrePut (key, value, options, callback) {
+    options = xtend(options)
+    delete options.valueEncoding
+
     self.levelup.put(key, value, options, afterPut)
 
     function afterPut (err) {
@@ -182,6 +183,9 @@ LevelUPDOWN.prototype._get = function (key, options, callback) {
   this._externs.preGet(this, [ key, options, callback ], afterPreGet)
 
   function afterPreGet (key, options, callback) {
+    options = xtend(options)
+    delete options.valueEncoding
+
     self.levelup.get(key, fixOptions(options), afterGet)
 
     function afterGet (err, value) {
@@ -220,6 +224,9 @@ LevelUPDOWN.prototype._batch = function (array, options, callback) {
   this._externs.preBatch(this, [ array, options, callback ], afterPreBatch)
 
   function afterPreBatch (array, options, callback) {
+    options = xtend(options)
+    delete options.valueEncoding
+
     self.levelup.batch(array, options, afterBatch)
 
     function afterBatch (err) {
