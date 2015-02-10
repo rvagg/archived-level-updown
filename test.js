@@ -63,23 +63,23 @@ test('test basic pass-through', function (t) {
 
       db2.get('foo1', function (err, value) {
         t.ifError(err, 'no error')
-        t.equal(value, 'bar1', 'got expected value')
+        t.equal(value.toString(), 'bar1', 'got expected value')
   
         db.get('foo2', function (err, value) {
           t.ifError(err, 'no error')
-          t.equal(value, 'bar2', 'got expected value')
+          t.equal(value.toString(), 'bar2', 'got expected value')
     
           db2.get('foo2', function (err, value) {
              t.ifError(err, 'no error')
-             t.equal(value, 'bar2', 'got expected value')
+             t.equal(value.toString(), 'bar2', 'got expected value')
 
             db3.get('foo1', function (err, value) {
               t.ifError(err, 'no error')
-              t.equal(value, 'bar1', 'got expected value')
+              t.equal(value.toString(), 'bar1', 'got expected value')
 
               db3.get('foo2', function (err, value) {
                 t.ifError(err, 'no error')
-                t.equal(value, 'bar2', 'got expected value')
+                t.equal(value.toString(), 'bar2', 'got expected value')
 
                 db.close(t.end())
               })
@@ -543,7 +543,7 @@ test('test iterator() extends', function (t) {
   t.ok(iteratorCalledWith[0] instanceof updown.LevelUPDOWNIterator, 'got expected arguemnt')
   t.deepEqual(
       iteratorCalledWith[0].options
-    , { options: 1, reverse: false, keyEncoding: 'binary', valueEncoding: 'binary' }
+    , { fillCache: false, keyAsBuffer: true, keyEncoding: 'binary', keys: true, limit: -1, options: 1, reverse: false, valueAsBuffer: true, values: true, valueEncoding: 'binary' }
     , 'iterator had expected options'
   )
 
