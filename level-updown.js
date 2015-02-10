@@ -6,14 +6,7 @@ var AbstractLevelDOWN = require('abstract-leveldown').AbstractLevelDOWN
   , xtend             = require('xtend')
 
 function fixOptions (options) {
-  var x = {
-      valueEncoding : options.asBuffer === false ? 'utf8' : 'binary'
-  }
-
-  if (options.keyEncoding != 'utf8' && options.valueEncoding != 'utf8')
-    x.keyEncoding = 'binary'
-
-  return xtend(options, x)
+  return xtend(options)
 }
 
 function LevelUPDOWNIterator (db, options) {
