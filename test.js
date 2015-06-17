@@ -543,7 +543,7 @@ test('test iterator() extends', function (t) {
   t.ok(iteratorCalledWith[0] instanceof updown.LevelUPDOWNIterator, 'got expected arguemnt')
   t.deepEqual(
       iteratorCalledWith[0].options
-    , { fillCache: false, keyAsBuffer: true, keyEncoding: 'binary', keys: true, limit: -1, options: 1, reverse: false, valueAsBuffer: true, values: true, valueEncoding: 'binary' }
+    , { keyEncoding: 'binary', options: 1, reverse: false, valueEncoding: 'binary' }
     , 'iterator had expected options'
   )
 
